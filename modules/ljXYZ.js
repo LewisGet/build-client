@@ -72,6 +72,24 @@ xyz.multiply = function (a, multiply) {
     return xyz;
 };
 
+/**
+ * 三圍座標距離
+ *
+ * @param object a {x: float, y: float, z: float}
+ * @param object b {x: float, y: float, z: float}
+ *
+ * @return object {x: float, y: float, z: float}
+ */
+xyz.distance = function (a, b) {
+    var xyzDiff = xyz.diff(a, b);
+
+    var x = Math.pow(xyzDiff.x, 2);
+    var y = Math.pow(xyzDiff.y, 2);
+    var z = Math.pow(xyzDiff.z, 2);
+
+    return Math.sqrt(x + y + z);
+};
+
 xyz.diffFrame = function (a, b, sec) {
     var frames = [];
     var fps = 30;
@@ -96,6 +114,14 @@ xyz.diffFrame = function (a, b, sec) {
     frames.push(b);
 
     return frames;
+};
+
+xyz.diffFrameByMixSpeed = function (a, b, maxInOneSec) {
+    var distance = xyz.distance(a, b);
+
+    var splitPart = distance / maxInOneSec;
+
+    return xyz.diffFrame(a, b, splitPart);
 };
 
 var functionsName = Object.keys(xyz);
