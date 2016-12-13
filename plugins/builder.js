@@ -5,6 +5,8 @@ builder = function () {
     this.fps = 30;
     this.toDoLocationList = [];
     this.toDoLookAtList = [];
+    this.toDoMouse = [];
+    this.toDoInput = [];
     this.bot = new java.awt.Robot();
     this.keyEvent = java.awt.event.KeyEvent;
     this.inputEvent = java.awt.event.InputEvent;
@@ -90,8 +92,13 @@ builder = function () {
     };
 
     this.updateToDo = function () {
+        this.updateToDoLocation();
+        this.updateToDoLookAt();
+        this.updateToDoInput();
+    };
+
+    this.updateToDoLocation = function () {
         var newToDoLocationList = [];
-        var newToDoLookAtList = [];
 
         for (var i = 0; i < this.toDoLocationList.length; i++)
         {
@@ -110,6 +117,10 @@ builder = function () {
         }
 
         this.toDoLocationList = newToDoLocationList;
+    };
+
+    this.updateToDoLookAt = function () {
+        var newToDoLookAtList = [];
 
         for (var i = 0; i < this.toDoLookAtList.length; i++)
         {
@@ -128,6 +139,64 @@ builder = function () {
         }
 
         this.toDoLookAtList = newToDoLookAtList;
+    };
+
+    this.isLocationControllerDone = function () {
+        return ! (this.toDoLocationList.length > 0 || this.toDoLookAtList.length > 0);
+    };
+
+    this.updateToDoMouse = function () {
+        if (! this.isLocationControllerDone())
+        {
+            return false;
+        }
+
+        var newToDoMouse = [];
+
+        for (var i = 0; i < this.toDoMouse.length; i++)
+        {
+            var toDo = this.toDoMouse[i];
+
+            if (i == 0)
+            {
+                // TODO: done it.
+            }
+            else
+            {
+                newToDoMouse.push(toDo);
+            }
+        }
+
+        this.toDoMouse = newToDoMouse;
+
+        return true;
+    };
+
+    this.updateToDoInput = function () {
+        if (! this.isLocationControllerDone())
+        {
+            return false;
+        }
+
+        var newToDoInput = [];
+
+        for (var i = 0; i < this.toDoInput.length; i++)
+        {
+            var toDo = this.toDoInput[i];
+
+            if (i == 0)
+            {
+                // TODO: done it.
+            }
+            else
+            {
+                newToDoInput.push(toDo);
+            }
+        }
+
+        this.toDoInput = newToDoInput;
+
+        return true;
     };
 
     this.pushLocation = function (frames) {
@@ -184,10 +253,6 @@ builder = function () {
         var z = ((Math.random() - 0.5) * 0.01);
 
         this.lookAt({x: x, y: y, z: z});
-    };
-
-    this.buildFirstBlock = function () {
-
     };
 };
 
