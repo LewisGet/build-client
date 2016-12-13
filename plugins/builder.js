@@ -80,9 +80,9 @@ builder = function () {
 
             if (i == 0)
             {
-                this.x = toDo.x;
-                this.y = toDo.y;
-                this.z = toDo.z;
+                this.direction.x = toDo.x;
+                this.direction.y = toDo.y;
+                this.direction.z = toDo.z;
             }
             else
             {
