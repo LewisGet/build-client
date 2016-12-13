@@ -213,6 +213,20 @@ builder = function () {
         }
     };
 
+    this.pushMouse = function (frames) {
+        for (var i = 0; i < frames.length; i++)
+        {
+            this.toDoMouse.push(frames[i]);
+        }
+    };
+
+    this.pushInput = function (frames) {
+        for (var i = 0; i < frames.length; i++)
+        {
+            this.toDoInput.push(frames[i]);
+        }
+    };
+
     this.moveToAndLookAt = function (toLocation, lookAt) {
         this.moveTo(toLocation);
         this.lookAt(lookAt);
@@ -253,6 +267,14 @@ builder = function () {
         var z = ((Math.random() - 0.5) * 0.01);
 
         this.lookAt({x: x, y: y, z: z});
+    };
+
+    this.buildFirstBlock = function (x, y, block) {
+
+    };
+
+    this.nextBlock = function () {
+
     };
 };
 
