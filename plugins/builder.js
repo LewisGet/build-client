@@ -138,7 +138,7 @@ builder = function () {
             startLookAt = this.toDoLookAtList[this.toDoLookAtList.length - 1];
         }
 
-        var lookAtFrames = xyz.diffFrame(startLookAt, lookAt, (Math.random()).toFixed(2));
+        var lookAtFrames = xyz.diffFrame(startLookAt, lookAt, (Math.random() * 3).toFixed(2));
 
         this.pushLookAt(lookAtFrames);
     };
