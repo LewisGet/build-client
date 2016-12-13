@@ -15,6 +15,8 @@ builder = function () {
             throw ("entity need to init.");
         }
 
+        entity.setFlying(true);
+
         this.updateToDo();
 
         var location = new org.bukkit.Location(this.entity.world, (this.x).toFixed(3), (this.y).toFixed(3), (this.z).toFixed(3));
