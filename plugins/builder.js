@@ -9,6 +9,10 @@ builder = function () {
     this.keyEvent = java.awt.event.KeyEvent;
     this.inputEvent = java.awt.event.InputEvent;
 
+    this.lastBlock = 0;
+    this.initBlock = 0;
+    this.lineStart = 0;
+
     this.flushBuilder = function () {
         if (this.entity == 0)
         {
@@ -37,6 +41,23 @@ builder = function () {
         location.setDirection(direction);
 
         this.entity.teleport(location);
+    };
+
+    this.initBlockEvent = function () {
+        builder = this;
+
+        events.blockPlace(function(e) {
+            builder.lastBlock = e.getBlock();
+
+            if (builder.initBlock == 0)
+            {
+                builder.initBlock = e.getBlock();
+            }
+        });
+
+        events.blockBreak(function(e) {
+            // nothing yet.
+        });
     };
 
     this.initUpdater = function () {
@@ -164,8 +185,13 @@ builder = function () {
 
         this.lookAt({x: x, y: y, z: z});
     };
+
+    this.buildFirstBlock = function () {
+
+    };
 };
 
 exports.builder = new builder();
 
 exports.builderUpdater = exports.builder.initUpdater();
+exports.builder.initBlockEvent();
