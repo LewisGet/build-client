@@ -15,12 +15,15 @@ builder = function () {
             throw ("entity need to init.");
         }
 
-        entity.setFlying(true);
+        this.entity.setFlying(true);
 
         this.updateToDo();
 
         var location = new org.bukkit.Location(this.entity.world, (this.x).toFixed(3), (this.y).toFixed(3), (this.z).toFixed(3));
-        var direction = new org.bukkit.util.Vector((this.direction.x).toFixed(3), (this.direction.y).toFixed(3), (this.direction.z).toFixed(3));
+
+        // 這裡有個數學的 bug ，因為方向換算角度是用三角公式。
+        // 所以如果 x y z 有值為 0 時，將無法計算角度。 (方向不存在 0,0,0)
+        var direction = new org.bukkit.util.Vector((this.direction.x).toFixed(5), (this.direction.y).toFixed(5), (this.direction.z).toFixed(5));
 
         location.setDirection(direction);
 
@@ -140,7 +143,7 @@ builder = function () {
             startLookAt = this.toDoLookAtList[this.toDoLookAtList.length - 1];
         }
 
-        var lookAtFrames = xyz.diffFrame(startLookAt, lookAt, (Math.random()).toFixed(2));
+        var lookAtFrames = xyz.diffFrame(startLookAt, lookAt, (Math.random() + 0.2).toFixed(2));
 
         this.pushLookAt(lookAtFrames);
     };
