@@ -74,6 +74,8 @@ builder = function () {
             }
         }
 
+        this.toDoLocationList = newToDoLocationList;
+
         for (var i = 0; i < this.toDoLookAtList.length; i++)
         {
             var toDo = this.toDoLookAtList[i];
@@ -89,6 +91,8 @@ builder = function () {
                 newToDoLookAtList.push(toDo);
             }
         }
+
+        this.toDoLookAtList = newToDoLookAtList;
     };
 
     this.pushLocation = function (frames) {
@@ -103,6 +107,40 @@ builder = function () {
         {
             this.toDoLookAtList.push(frames[i]);
         }
+    };
+
+    this.moveToAndLookAt = function (toLocation, lookAt) {
+        this.moveTo(toLocation);
+        this.lookAt(lookAt);
+    };
+
+    this.moveTo = function (toLocation) {
+        var xyz = require('ljXYZ');
+        var startLocation = this.entity.location;
+
+        // 如果還沒執行完待執行清單，要以最後待執行位置來算
+        if (this.toDoLocationList.length > 0)
+        {
+            startLocation = this.toDoLocationList[this.toDoLocationList.length - 1];
+        }
+
+        var locationFrames = xyz.diffFrameByMixSpeed(startLocation, toLocation, 5);
+
+        this.pushLocation(locationFrames);
+    };
+
+    this.lookAt = function (lookAt) {
+        var xyz = require('ljXYZ');
+        var startLookAt = this.entity.location.getDirection();
+
+        if (this.toDoLookAtList.length > 0)
+        {
+            startLookAt = this.toDoLookAtList[this.toDoLookAtList.length - 1];
+        }
+
+        var lookAtFrames = xyz.diffFrame(startLookAt, lookAt, (Math.random()).toFixed(2));
+
+        this.pushLookAt(lookAtFrames);
     };
 };
 
