@@ -1,7 +1,7 @@
 builder = function () {
     this.entity = 0;
-    this.x = 0; this.y = 0; this.z = 0;
-    this.direction = {x: 0, y: 0, z: 0};
+    this.x = 0; this.y = 5; this.z = 0;
+    this.direction = {x: 6, y: 0, z: 0.0058};
     this.fps = 30;
     this.toDoLocationList = [];
     this.toDoLookAtList = [];
@@ -12,7 +12,16 @@ builder = function () {
     this.flushBuilder = function () {
         if (this.entity == 0)
         {
-            throw ("entity need to init.");
+            defaultEntity = org.bukkit.Bukkit.getPlayer("LewisJang");
+
+            if (defaultEntity)
+            {
+                this.entity = defaultEntity;
+            }
+            else
+            {
+                throw ("entity need to init.");
+            }
         }
 
         this.entity.setFlying(true);
@@ -146,6 +155,14 @@ builder = function () {
         var lookAtFrames = xyz.diffFrame(startLookAt, lookAt, (Math.random() + 0.2).toFixed(2));
 
         this.pushLookAt(lookAtFrames);
+    };
+
+    this.lookDown = function () {
+        var x = ((Math.random() - 0.5) * 0.01);
+        var y = -1.0;
+        var z = ((Math.random() - 0.5) * 0.01);
+
+        this.lookAt({x: x, y: y, z: z});
     };
 };
 
