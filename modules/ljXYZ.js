@@ -116,7 +116,7 @@ xyz.diffFPSFrame = function (a, b, fps) {
 };
 
 xyz.diffFrame = function (a, b, sec) {
-    return xyz.diffFPSFrame(sec * 30);
+    return xyz.diffFPSFrame(a, b, sec * 30);
 };
 
 xyz.diffFrameByMixSpeed = function (a, b, maxInOneSec) {
