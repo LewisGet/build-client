@@ -33,6 +33,59 @@ frames.merge = function (a, b) {
     return frames;
 };
 
+frames.openItemSelect = function () {
+    var input = require('ljInput');
+
+    var value = input.keyDownFrames("E", 2);
+
+    return value;
+};
+
+frames.closeItemSelect = function () {
+    var input = require('ljInput');
+
+    var value = input.keyDownFrames("ESCAPE", 2);
+
+    return value;
+};
+
+frames.search = function (text) {
+    var input = require('ljInput');
+
+    var value = frames.openItemSelect();
+
+    value = value.concat(input.sleepFrames(3));
+    value = value.concat(input.inputTextFrames(text));
+
+    return value;
+};
+
+frames.push = function (key) {
+    var input = require('ljInput');
+
+    return input.keyDownFrames(key, 2);
+};
+
+frames.moveToFirstOne = function () {
+    var mouse = require('ljMouse');
+
+    var start = mouse.nowMousePosition();
+
+    return mouse.moveFrames(start, {x: 633, y: 365}, 5);
+};
+
+frames.sleepMouse = function (fps) {
+    var mouse = require('ljMouse');
+
+    return mouse.sleepFrames(fps);
+};
+
+frames.sleepInput = function (fps) {
+    var input = require('ljInput');
+
+    return input.sleepFrames(fps);
+};
+
 var functionsName = Object.keys(frames);
 
 for (var i = 0; i < functionsName.length; i++)

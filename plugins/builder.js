@@ -78,6 +78,7 @@ builder = function () {
         this.updateToDoLocation();
         this.updateToDoLookAt();
         this.updateToDoInput();
+        this.updateToDoMouse();
     };
 
     this.updateToDoLocation = function () {
@@ -134,6 +135,8 @@ builder = function () {
             return false;
         }
 
+        var mouse = require('ljMouse');
+
         var newToDoMouse = [];
 
         for (var i = 0; i < this.toDoMouse.length; i++)
@@ -142,7 +145,7 @@ builder = function () {
 
             if (i == 0)
             {
-                // TODO: done it.
+                mouse[toDo.do](toDo.key);
             }
             else
             {
@@ -171,7 +174,6 @@ builder = function () {
 
             if (i == 0)
             {
-                // TODO: done it.
                 input[toDo.do](toDo.key);
             }
             else
@@ -256,25 +258,43 @@ builder = function () {
     };
 
     this.openItemSelect = function () {
-        var input = require('ljInput');
+        var frames = require('ljFrames');
 
-        var frames = input.keyDownFrames("E", 2);
-
-        this.pushInput(frames);
+        this.pushInput(frames.openItemSelect());
     };
 
     this.searchOrangeWool = function () {
-        var input = require('ljInput');
+        var frames = require('ljFrames');
 
-        this.openItemSelect();
+        this.pushInput(frames.search("orange wool"));
+    };
 
-        var frames = input.sleepFrames(3);
+    this.takeFirstOneItem = function () {
+        var frames = require('ljFrames');
 
-        this.pushInput(frames);
+        var input = frames.search("orange wool");
+        var mouseWait = frames.sleepMouse(input.length);
 
-        var frames = input.inputTextFrames("orange wool");
+        this.pushInput(input);
+        this.pushMouse(mouseWait);
 
-        this.pushInput(frames);
+        var mouse = frames.moveToFirstOne();
+        var inputWait = frames.sleepInput(mouse.length);
+
+        this.pushInput(inputWait);
+        this.pushMouse(mouse);
+
+        var input = frames.push("1");
+
+        this.pushInput(input);
+
+        var inputWait = frames.sleepInput(1);
+
+        this.pushInput(inputWait);
+
+        var input = frames.closeItemSelect();
+
+        this.pushInput(input);
     };
 };
 

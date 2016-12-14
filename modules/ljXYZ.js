@@ -90,10 +90,9 @@ xyz.distance = function (a, b) {
     return Math.sqrt(x + y + z);
 };
 
-xyz.diffFrame = function (a, b, sec) {
+xyz.diffFPSFrame = function (a, b, fps) {
     var frames = [];
-    var fps = 30;
-    var totalFrames = sec * fps;
+    var totalFrames = fps;
 
     // 總差距
     var xyzDiff = xyz.diff(b, a);
@@ -114,6 +113,10 @@ xyz.diffFrame = function (a, b, sec) {
     frames.push(b);
 
     return frames;
+};
+
+xyz.diffFrame = function (a, b, sec) {
+    return xyz.diffFPSFrame(sec * 30);
 };
 
 xyz.diffFrameByMixSpeed = function (a, b, maxInOneSec) {
