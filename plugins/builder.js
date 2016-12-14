@@ -7,9 +7,6 @@ builder = function () {
     this.toDoLookAtList = [];
     this.toDoMouse = [];
     this.toDoInput = [];
-    this.bot = new java.awt.Robot();
-    this.keyEvent = java.awt.event.KeyEvent;
-    this.inputEvent = java.awt.event.InputEvent;
 
     this.lastBlock = 0;
     this.initBlock = 0;
@@ -75,20 +72,6 @@ builder = function () {
         }, 1000 / this.fps);
 
         return builderUpdater;
-    };
-
-    this.rightClick = function () {
-        var rightClick = this.inputEvent.BUTTON3_DOWN_MASK;
-
-        bot.mousePress(rightClick);
-        bot.mouseRelease(rightClick);
-    };
-
-    this.leftClick = function () {
-        var leftClick = this.inputEvent.BUTTON1_DOWN_MASK;
-
-        bot.mousePress(leftClick);
-        bot.mouseRelease(leftClick);
     };
 
     this.updateToDo = function () {
@@ -178,6 +161,8 @@ builder = function () {
             return false;
         }
 
+        var input = require('ljInput');
+
         var newToDoInput = [];
 
         for (var i = 0; i < this.toDoInput.length; i++)
@@ -187,6 +172,7 @@ builder = function () {
             if (i == 0)
             {
                 // TODO: done it.
+                input[toDo.do](toDo.key);
             }
             else
             {
@@ -269,12 +255,26 @@ builder = function () {
         this.lookAt({x: x, y: y, z: z});
     };
 
-    this.buildFirstBlock = function (x, y, block) {
+    this.openItemSelect = function () {
+        var input = require('ljInput');
 
+        var frames = input.keyDownFrames("E", 2);
+
+        this.pushInput(frames);
     };
 
-    this.nextBlock = function () {
+    this.searchOrangeWool = function () {
+        var input = require('ljInput');
 
+        this.openItemSelect();
+
+        var frames = input.sleepFrames(3);
+
+        this.pushInput(frames);
+
+        var frames = input.inputTextFrames("orange wool");
+
+        this.pushInput(frames);
     };
 };
 
