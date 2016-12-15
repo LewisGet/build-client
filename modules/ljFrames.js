@@ -74,6 +74,18 @@ frames.moveToFirstOne = function () {
     return mouse.moveFrames(start, {x: 633, y: 365}, 5);
 };
 
+frames.leftClick = function () {
+    var mouse = require('ljMouse');
+
+    return mouse.clickFrames("left", 2);
+};
+
+frames.rightClick = function () {
+    var mouse = require('ljMouse');
+
+    return mouse.clickFrames("right", 2);
+};
+
 frames.sleepMouse = function (fps) {
     var mouse = require('ljMouse');
 
@@ -84,6 +96,25 @@ frames.sleepInput = function (fps) {
     var input = require('ljInput');
 
     return input.sleepFrames(fps);
+};
+
+frames.sleepXYZ = function (xyz, fps) {
+    var value = [];
+
+    for (var i = 0; i < fps; i++)
+    {
+        value.push(xyz);
+    }
+
+    return value;
+};
+
+frames.sleepLocation = function (xyz, fps) {
+    return frames.sleepXYZ(xyz, fps);
+};
+
+frames.sleepLookAt = function (xyz, fps) {
+    return frames.sleepXYZ(xyz, fps);
 };
 
 var functionsName = Object.keys(frames);

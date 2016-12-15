@@ -1,6 +1,6 @@
 builder = function () {
     this.entity = 0;
-    this.x = 0; this.y = 5; this.z = 0;
+    this.x = 0; this.y = 5.8; this.z = 0;
     this.direction = {x: 6, y: 0, z: 0.0058};
     this.fps = 30;
     this.toDoLocationList = [];
@@ -81,6 +81,14 @@ builder = function () {
         this.updateToDoMouse();
     };
 
+    this.isLocationControllerDone = function () {
+        return ! (this.toDoLocationList.length > 0 || this.toDoLookAtList.length > 0);
+    };
+
+    this.isBotControllerDone = function () {
+        return ! (this.toDoMouse.length > 0 || this.toDoInput.length > 0);
+    };
+
     this.updateToDoLocation = function () {
         var newToDoLocationList = [];
 
@@ -125,16 +133,7 @@ builder = function () {
         this.toDoLookAtList = newToDoLookAtList;
     };
 
-    this.isLocationControllerDone = function () {
-        return ! (this.toDoLocationList.length > 0 || this.toDoLookAtList.length > 0);
-    };
-
     this.updateToDoMouse = function () {
-        if (! this.isLocationControllerDone())
-        {
-            return false;
-        }
-
         var mouse = require('ljMouse');
 
         var newToDoMouse = [];
@@ -154,16 +153,9 @@ builder = function () {
         }
 
         this.toDoMouse = newToDoMouse;
-
-        return true;
     };
 
     this.updateToDoInput = function () {
-        if (! this.isLocationControllerDone())
-        {
-            return false;
-        }
-
         var input = require('ljInput');
 
         var newToDoInput = [];
@@ -183,8 +175,6 @@ builder = function () {
         }
 
         this.toDoInput = newToDoInput;
-
-        return true;
     };
 
     this.pushLocation = function (frames) {
@@ -215,38 +205,56 @@ builder = function () {
         }
     };
 
+    this.getLastLocation = function () {
+        var lastLocation = this.entity.location;
+
+        if (this.toDoLocationList.length > 0)
+        {
+            lastLocation = this.toDoLocationList[this.toDoLocationList.length - 1];
+        }
+
+        return lastLocation;
+    };
+
+    this.getLastLookAt = function () {
+        var lastLookAt = this.entity.location.getDirection();
+
+        if (this.toDoLookAtList.length > 0)
+        {
+            lastLookAt = this.toDoLookAtList[this.toDoLookAtList.length - 1];
+        }
+
+        return lastLookAt;
+    };
+
     this.moveToAndLookAt = function (toLocation, lookAt) {
-        this.moveTo(toLocation);
+        var action = this.moveTo(toLocation);
+
         this.lookAt(lookAt);
+
+        return action;
     };
 
     this.moveTo = function (toLocation) {
         var xyz = require('ljXYZ');
-        var startLocation = this.entity.location;
-
-        // 如果還沒執行完待執行清單，要以最後待執行位置來算
-        if (this.toDoLocationList.length > 0)
-        {
-            startLocation = this.toDoLocationList[this.toDoLocationList.length - 1];
-        }
+        var startLocation = this.getLastLocation();
 
         var locationFrames = xyz.diffFrameByMixSpeed(startLocation, toLocation, 5);
 
         this.pushLocation(locationFrames);
+
+        return locationFrames.length;
     };
 
     this.lookAt = function (lookAt) {
         var xyz = require('ljXYZ');
-        var startLookAt = this.entity.location.getDirection();
-
-        if (this.toDoLookAtList.length > 0)
-        {
-            startLookAt = this.toDoLookAtList[this.toDoLookAtList.length - 1];
-        }
+        var startLookAt = this.getLastLookAt();
 
         var lookAtFrames = xyz.diffFrame(startLookAt, lookAt, (Math.random() + 0.2).toFixed(2));
 
         this.pushLookAt(lookAtFrames);
+
+        return lookAtFrames.length;
     };
 
     this.lookDown = function () {
@@ -254,47 +262,130 @@ builder = function () {
         var y = -1.0;
         var z = ((Math.random() - 0.5) * 0.01);
 
-        this.lookAt({x: x, y: y, z: z});
+        return this.lookAt({x: x, y: y, z: z});
     };
 
     this.openItemSelect = function () {
         var frames = require('ljFrames');
 
-        this.pushInput(frames.openItemSelect());
+        var action = frames.openItemSelect();
+
+        this.pushInput(action);
+
+        return action.length;
     };
 
-    this.searchOrangeWool = function () {
+    this.takeFirstOneItem = function (itemName) {
         var frames = require('ljFrames');
+        var totalAction = 0;
 
-        this.pushInput(frames.search("orange wool"));
-    };
-
-    this.takeFirstOneItem = function () {
-        var frames = require('ljFrames');
-
-        var input = frames.search("orange wool");
+        var input = frames.search(itemName);
         var mouseWait = frames.sleepMouse(input.length);
 
         this.pushInput(input);
         this.pushMouse(mouseWait);
+        totalAction += input.length;
 
         var mouse = frames.moveToFirstOne();
         var inputWait = frames.sleepInput(mouse.length);
 
         this.pushInput(inputWait);
         this.pushMouse(mouse);
+        totalAction += inputWait.length;
 
         var input = frames.push("1");
 
         this.pushInput(input);
+        this.pushMouse(frames.sleepMouse(input.length));
+        totalAction += input.length;
 
         var inputWait = frames.sleepInput(1);
 
         this.pushInput(inputWait);
+        this.pushMouse(frames.sleepMouse(inputWait.length));
+        totalAction += inputWait.length;
 
         var input = frames.closeItemSelect();
 
         this.pushInput(input);
+        this.pushMouse(frames.sleepMouse(input.length));
+        totalAction += input.length;
+
+        return totalAction;
+    };
+
+    this.rightClick = function () {
+        var frames = require('ljFrames');
+        var action = frames.rightClick();
+
+        this.pushMouse(action);
+        this.pushInput(frames.sleepInput(action.length));
+
+        return action.length;
+    };
+
+    this.leftClick = function () {
+        var frames = require('ljFrames');
+        var action = frames.leftClick();
+
+        this.pushMouse(action);
+        this.pushInput(frames.sleepInput(action.length));
+
+        return action.length;
+    };
+
+    this.isTaking = function (typeId, data) {
+        var item = this.entity.itemInHand.data;
+
+        return (item.itemTypeId == typeId && item.data == data);
+    };
+
+    this.botWait = function (fps) {
+        var frames = require('ljFrames');
+
+        var waitInput = frames.sleepInput(fps);
+        var waitMouse = frames.sleepMouse(fps);
+
+        this.pushInput(waitInput);
+        this.pushMouse(waitMouse);
+
+        return fps;
+    };
+
+    this.LLWait = function (fps) {
+        var frames = require('ljFrames');
+
+        var waitLocation = frames.sleepLocation(this.getLastLocation(), fps);
+        var waitLookAt = frames.sleepLookAt(this.getLastLookAt(), fps);
+
+        this.pushLocation(waitLocation);
+        this.pushLookAt(waitLookAt);
+
+        return fps;
+    };
+
+    this.buildBlock = function (x, y, typeId, data) {
+        var frames = require('ljFrames');
+        var totalAction = 0;
+
+        if (! this.isTaking(typeId, data))
+        {
+            var dataset = require('ljDataset');
+            var item = dataset.getItemByIdData(typeId, data);
+            var waitTakeTime = this.takeFirstOneItem(item.name);
+            totalAction += this.LLWait(waitTakeTime);
+        }
+
+        var waitMoveTo = this.moveTo({x: (x + 0.5), y: this.y, z: (y + 0.5)});
+        totalAction += this.botWait(waitMoveTo);
+
+        var waitLookDownTime = this.lookDown();
+        totalAction += this.botWait(waitLookDownTime);
+
+        var waitRightClick = this.rightClick();
+        totalAction += this.LLWait(waitRightClick);
+
+        return totalAction;
     };
 };
 
