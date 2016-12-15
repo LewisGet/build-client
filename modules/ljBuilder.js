@@ -326,6 +326,19 @@ builder = function () {
         return (lookAt.y < -0.8);
     };
 
+    this.lookAll = function () {
+        var x = ((Math.random() - 0.5) * 0.01);
+        var y = -1.0;
+        var z = ((Math.random() - 0.5) * 0.01);
+
+        var location = this.getLastLocation();
+        location.y = 88;
+
+        var action = this.moveToAndLookAt(location, {x: x, y: y, z: z});
+
+        return ;
+    };
+
     this.openItemSelect = function () {
         var frames = require('ljFrames');
 
@@ -448,6 +461,14 @@ builder = function () {
         return (block.getTypeId() == typeId && block.getData() == data);
     };
 
+    this.hasBlock = function (x, y) {
+        var xyz = this.xyToBlock(x, y);
+        var location = new org.bukkit.Location(this.entity.world, xyz.x, xyz.y, xyz.z);
+        var block = location.block;
+
+        return ! (block.getTypeId() == 0);
+    };
+
     this.buildBlock = function (x, y, typeId, data) {
         var frames = require('ljFrames');
         var totalAction = 0;
@@ -475,6 +496,13 @@ builder = function () {
         {
             var waitLookDownTime = this.lookDown();
             totalAction += this.botWait(waitLookDownTime);
+        }
+
+        if (this.hasBlock(x, y))
+        {
+            alert("in");
+            var waitLeftClick = this.leftClick();
+            totalAction += this.LLWait(waitLeftClick);
         }
 
         var waitRightClick = this.rightClick();
