@@ -265,6 +265,12 @@ builder = function () {
         return this.lookAt({x: x, y: y, z: z});
     };
 
+    this.isLookDown = function () {
+        var lookAt = this.getLastLookAt();
+
+        return (lookAt.y < -0.8);
+    };
+
     this.openItemSelect = function () {
         var frames = require('ljFrames');
 
@@ -379,8 +385,11 @@ builder = function () {
         var waitMoveTo = this.moveTo({x: (x + 0.5), y: this.y, z: (y + 0.5)});
         totalAction += this.botWait(waitMoveTo);
 
-        var waitLookDownTime = this.lookDown();
-        totalAction += this.botWait(waitLookDownTime);
+        if (! this.isLookDown())
+        {
+            var waitLookDownTime = this.lookDown();
+            totalAction += this.botWait(waitLookDownTime);
+        }
 
         var waitRightClick = this.rightClick();
         totalAction += this.LLWait(waitRightClick);
