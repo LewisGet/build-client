@@ -12,6 +12,8 @@ builder = function () {
     this.initBlock = 0;
     this.lineStart = 0;
 
+    this.ground = 4;
+
     this.flushBuilder = function () {
         if (this.entity == 0)
         {
@@ -206,7 +208,7 @@ builder = function () {
     };
 
     this.getLastLocation = function () {
-        var lastLocation = this.entity.location;
+        var lastLocation = {x: this.x, y: this.y, z: this.z};
 
         if (this.toDoLocationList.length > 0)
         {
@@ -217,7 +219,7 @@ builder = function () {
     };
 
     this.getLastLookAt = function () {
-        var lastLookAt = this.entity.location.getDirection();
+        var lastLookAt = this.direction;
 
         if (this.toDoLookAtList.length > 0)
         {
@@ -255,6 +257,14 @@ builder = function () {
         this.pushLookAt(lookAtFrames);
 
         return lookAtFrames.length;
+    };
+
+    this.lookAtLocation = function (location) {
+        var xyz = require('ljXYZ');
+
+        var vec = xyz.diff(location, this.getLastLocation());
+
+        return this.lookAt(vec);
     };
 
     this.lookDown = function () {
@@ -370,9 +380,40 @@ builder = function () {
         return fps;
     };
 
+    this.xyToXYZ = function (x, y, h)
+    {
+        return {x: (x + 0.5), y: h, z: (y + 0.5)};
+    };
+
+    this.xyToBlock = function (x, y)
+    {
+        return this.xyToXYZ(x, y, this.ground);
+    };
+
+    this.xyToBuilder = function (x, y)
+    {
+        return this.xyToXYZ(x, y, this.y);
+    };
+
+    this.isSetBlock = function (x, y, typeId, data) {
+        var xyz = this.xyToBlock(x, y);
+        var location = new org.bukkit.Location(this.entity.world, xyz.x, xyz.y, xyz.z);
+        var block = location.block;
+
+        return (block.getTypeId() == typeId && block.getData() == data);
+    };
+
     this.buildBlock = function (x, y, typeId, data) {
         var frames = require('ljFrames');
         var totalAction = 0;
+
+        if (this.isSetBlock(x, y, typeId, data))
+        {
+            // if is set block, just look at it
+            totalAction = this.lookAtLocation(this.xyToBlock(x, y));
+
+            return totalAction;
+        }
 
         if (! this.isTaking(typeId, data))
         {
@@ -382,7 +423,7 @@ builder = function () {
             totalAction += this.LLWait(waitTakeTime);
         }
 
-        var waitMoveTo = this.moveTo({x: (x + 0.5), y: this.y, z: (y + 0.5)});
+        var waitMoveTo = this.moveTo(this.xyToBuilder(x, y));
         totalAction += this.botWait(waitMoveTo);
 
         if (! this.isLookDown())
