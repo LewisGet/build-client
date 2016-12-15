@@ -248,23 +248,68 @@ builder = function () {
         return locationFrames.length;
     };
 
-    this.lookAt = function (lookAt) {
+    this.lookAtFPS = function (lookAt, fps) {
         var xyz = require('ljXYZ');
         var startLookAt = this.getLastLookAt();
 
-        var lookAtFrames = xyz.diffFrame(startLookAt, lookAt, (Math.random() + 0.2).toFixed(2));
+        var lookAtFrames = xyz.diffFPSFrame(startLookAt, lookAt, fps);
 
         this.pushLookAt(lookAtFrames);
 
         return lookAtFrames.length;
     };
 
-    this.lookAtLocation = function (location) {
+    this.lookAt = function (lookAt) {
+        return this.lookAtFPS(lookAt, (Math.random() * 30).toFixed(2));
+    };
+
+    this.lookAtLocationFPS = function (location, fps) {
         var xyz = require('ljXYZ');
+        var x = location.x;
+        var y = location.y - this.entity.eyeHeight;
+        var z = location.z;
 
-        var vec = xyz.diff(location, this.getLastLocation());
+        var vec = xyz.diff({x: x, y: y, z: z}, this.getLastLocation());
 
-        return this.lookAt(vec);
+        return this.lookAtFPS(vec, fps);
+    };
+
+    this.lookAtLocation = function (location) {
+        return this.lookAtLocationFPS(location, (Math.random() * 30).toFixed(2));
+    };
+
+    this.counting = function (a, b) {
+        var xyz = require('ljXYZ');
+        var action = 0;
+
+        var split = xyz.diffMaxValue(a, b);
+
+        var points = xyz.diffFPSFrame(a, b, split);
+
+        for (var i = 0; i < points.length; i++)
+        {
+            var point = xyz.humanity(points[i]);
+
+            // 控制偏差
+            if ((Math.random()).toFixed(2) < 0.8)
+            {
+                point = xyz.merge(point, xyz.deviation());
+            }
+
+            action += this.lookAtLocationFPS(point, 15);
+
+            // 模仿手晃
+            if ((Math.random()).toFixed(2) < 0.3)
+            {
+                point = xyz.merge(point, xyz.deviation());
+                action += this.lookAtLocationFPS(point, 1);
+
+                point = xyz.merge(point, xyz.deviation());
+                action += this.lookAtLocationFPS(point, 1);
+            }
+        }
+
+        return action;
     };
 
     this.lookDown = function () {

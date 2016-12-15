@@ -90,6 +90,30 @@ xyz.distance = function (a, b) {
     return Math.sqrt(x + y + z);
 };
 
+xyz.max = function (xyz) {
+    return Math.max(xyz.x, xyz.y, xyz.z);
+};
+
+xyz.diffMaxValue = function (a, b) {
+    var xyzDiff = xyz.diff(b, a);
+
+    return xyz.max(xyzDiff);
+};
+
+xyz.deviation = function () {
+    var random = function () {
+        return (Math.random() - 0.5) / 10;
+    }
+
+    return {x: random(), y: random(), z: random()};
+};
+
+xyz.humanity = function (a) {
+    var b = {x: 0.5, y: 0.5, z: 0.5};
+
+    return xyz.merge(a, b);
+};
+
 xyz.diffFPSFrame = function (a, b, fps) {
     var frames = [];
     var totalFrames = fps;
