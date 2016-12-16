@@ -46,9 +46,38 @@ logger = function () {
     };
 
     this.resetEntity = function () {
-        var location = new org.bukkit.Location(this.entity.world, 0.5, this.basicY, 0.5);
 
-        var direction = new org.bukkit.util.Vector(0.85, 0.0, 0.0);
+        // look 8
+        //var location = new org.bukkit.Location(this.entity.world, 0.5, this.basicY, 0.5);
+        //var direction = new org.bukkit.util.Vector(0.85, 0.0, 0.0);
+
+        // look 85
+        //var location = new org.bukkit.Location(this.entity.world, -1.898, this.basicY, 0.5);
+        //var direction = new org.bukkit.util.Vector(0.5, -0.86, 0.0);
+
+        // look 2
+        //var location = new org.bukkit.Location(this.entity.world, 0.5, this.basicY, 0.5);
+        //var direction = new org.bukkit.util.Vector(-0.85, 0.0, 0.0);
+
+        // look 25
+        //var location = new org.bukkit.Location(this.entity.world, 1.898, this.basicY, 0.5);
+        //var direction = new org.bukkit.util.Vector(-0.5, -0.86, 0.0);
+
+        // look 4
+        //var location = new org.bukkit.Location(this.entity.world, 0.5, this.basicY, 0.5);
+        //var direction = new org.bukkit.util.Vector(0.0, 0.0, -0.85);
+
+        // look 45
+        //var location = new org.bukkit.Location(this.entity.world, 0.5, this.basicY, 1.898);
+        //var direction = new org.bukkit.util.Vector(0.0, -0.86, -0.5);
+
+        // look 6
+        //var location = new org.bukkit.Location(this.entity.world, 0.5, this.basicY, 0.5);
+        //var direction = new org.bukkit.util.Vector(0.0, 0.0, 0.85);
+
+        // look 65
+        var location = new org.bukkit.Location(this.entity.world, 0.5, this.basicY, -1.898 + 0.5);
+        var direction = new org.bukkit.util.Vector(0.0, -0.86, 0.5);
 
         location.setDirection(direction);
 
@@ -65,6 +94,7 @@ logger = function () {
     };
 
     this.enableLogger = function () {
+        this.resetBlock();
         this.resetEntity();
         this.enable = true;
     };
