@@ -1,6 +1,6 @@
 builder = function () {
     this.entity = 0;
-    this.x = 0; this.y = 5.8; this.z = 0;
+    this.x = 0; this.y = 54.8; this.z = 0;
     this.direction = {x: 6, y: 0, z: 0.0058};
     this.fps = 30;
     this.toDoLocationList = [];
@@ -12,7 +12,7 @@ builder = function () {
     this.initBlock = 0;
     this.lineStart = 0;
 
-    this.ground = 4;
+    this.ground = 53;
 
     this.flushBuilder = function () {
         if (this.entity == 0)
@@ -312,6 +312,10 @@ builder = function () {
         return action;
     };
 
+    this.countingBlock = function (ax, ay, bx, by) {
+        this.counting(this.xyToBlock(ax, ay), this.xyToBlock(bx, by));
+    };
+
     this.lookDown = function () {
         var x = ((Math.random() - 0.5) * 0.01);
         var y = -1.0;
@@ -485,7 +489,7 @@ builder = function () {
         {
             var dataset = require('ljDataset');
             var item = dataset.getItemByIdData(typeId, data);
-            var waitTakeTime = this.takeFirstOneItem(item.name);
+            var waitTakeTime = this.takeFirstOneItem(dataset.getHumanizeName(item));
             totalAction += this.LLWait(waitTakeTime);
         }
 
@@ -500,7 +504,6 @@ builder = function () {
 
         if (this.hasBlock(x, y))
         {
-            alert("in");
             var waitLeftClick = this.leftClick();
             totalAction += this.LLWait(waitLeftClick);
         }
