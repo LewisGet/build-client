@@ -1,4 +1,4 @@
-var builder = require('ljBuilder');
+var logger = require('ljLogger');
 
-exports.builder = builder.builder;
-exports.builderUpdater = builder.builderUpdater;
+exports.logger = logger.logger;
+exports.loggerUpdater = logger.loggerUpdater;
