@@ -74,6 +74,14 @@ frames.moveToFirstOne = function () {
     return mouse.moveFrames(start, {x: 633, y: 365}, 5);
 };
 
+frames.moveToSecondOne = function () {
+    var mouse = require('ljMouse');
+
+    var start = mouse.nowMousePosition();
+
+    return mouse.moveFrames(start, {x: 720, y: 365}, 5);
+};
+
 frames.leftClick = function () {
     var mouse = require('ljMouse');
 

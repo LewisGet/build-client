@@ -48,7 +48,7 @@ exports.getItemByName = function (name)
     }
 
     return 0;
-}
+};
 
 exports.getItemByIdData = function (id, data)
 {
@@ -65,4 +65,14 @@ exports.getItemByIdData = function (id, data)
     }
 
     return 0;
-}
+};
+
+exports.getHumanizeName = function (item)
+{
+    var name = item.name;
+
+    name.replace("stained clay", "sta");
+    name.replace("wool", "w");
+
+    return name;
+};

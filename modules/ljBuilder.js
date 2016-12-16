@@ -12,6 +12,8 @@ builder = function () {
     this.initBlock = 0;
     this.lineStart = 0;
 
+    this.lastTaking = {itemTypeId: 0, data: 0};
+
     this.ground = 53;
 
     this.flushBuilder = function () {
@@ -309,6 +311,9 @@ builder = function () {
             }
         }
 
+        this.botWait(action);
+        this.locationWait(action);
+
         return action;
     };
 
@@ -415,29 +420,62 @@ builder = function () {
     this.isTaking = function (typeId, data) {
         var item = this.entity.itemInHand.data;
 
+        if (this.lastTaking.id != 0)
+        {
+            item = this.lastTaking;
+        }
+
         return (item.itemTypeId == typeId && item.data == data);
     };
 
-    this.botWait = function (fps) {
-        var frames = require('ljFrames');
+    this.setTaking = function (typeId, data) {
+        this.lastTaking = {itemTypeId: typeId, data: data};
+    };
 
+    this.inputWait = function (fps) {
+        var frames = require('ljFrames');
         var waitInput = frames.sleepInput(fps);
-        var waitMouse = frames.sleepMouse(fps);
 
         this.pushInput(waitInput);
+        return fps;
+    };
+
+    this.mouseWait = function (fps) {
+        var frames = require('ljFrames');
+        var waitMouse = frames.sleepMouse(fps);
+
         this.pushMouse(waitMouse);
+        return fps;
+    };
+
+    this.botWait = function (fps) {
+        this.inputWait(fps);
+        this.mouseWait(fps);
+
+        return fps;
+    };
+
+    this.locationWait = function (fps) {
+        var frames = require('ljFrames');
+        var waitLocation = frames.sleepLocation(this.getLastLocation(), fps);
+
+        this.pushLocation(waitLocation);
+
+        return fps;
+    };
+
+    this.lookAtWait = function (fps) {
+        var frames = require('ljFrames');
+        var waitLookAt = frames.sleepLookAt(this.getLastLookAt(), fps);
+
+        this.pushLookAt(waitLookAt);
 
         return fps;
     };
 
     this.LLWait = function (fps) {
-        var frames = require('ljFrames');
-
-        var waitLocation = frames.sleepLocation(this.getLastLocation(), fps);
-        var waitLookAt = frames.sleepLookAt(this.getLastLookAt(), fps);
-
-        this.pushLocation(waitLocation);
-        this.pushLookAt(waitLookAt);
+        this.locationWait(fps);
+        this.lookAtWait(fps);
 
         return fps;
     };
@@ -490,6 +528,8 @@ builder = function () {
             var dataset = require('ljDataset');
             var item = dataset.getItemByIdData(typeId, data);
             var waitTakeTime = this.takeFirstOneItem(dataset.getHumanizeName(item));
+
+            this.setTaking(item.id, item.data);
             totalAction += this.LLWait(waitTakeTime);
         }
 
