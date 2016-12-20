@@ -1,11 +1,12 @@
 execute = function () {
     this.dir = java.io.File.separator
-    this.path = (["", "Users", "Public", "Documents", "execute.txt"]).join(this.dir);
-    this.file = new java.io.File(this.path);
+    this.path = 0;
+    this.file = 0;
+    this.action = 0;
     this.entity = 0;
     this.location = {x: 0, y: 0, z: 0};
     this.direction = {x: 0, y: 0, z: 0};
-    this.fps = 30
+    this.fps = 30;
     this.enable = false;
 
     this.flushExecute = function () {
@@ -70,11 +71,16 @@ execute = function () {
     };
 
     this.updateExecute = function () {
+        this.path = (["", "Users", "Public", "Documents", "execute", this.action.toString() + ".txt"]).join(this.dir);
+        this.file = new java.io.File(this.path);
+
         var toDo = JSON.parse(this.readFile());
 
         if (toDo.message == "done")
         {
             console.log("no more command");
+            this.action++;
+
             return true;
         }
 
@@ -83,6 +89,7 @@ execute = function () {
 
         console.log("command update");
         this.writeFile(this.doneMessage());
+        this.action++;
 
         return true;
     };
