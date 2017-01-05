@@ -6,6 +6,7 @@ execute = function () {
     this.entity = 0;
     this.location = {x: 0, y: 0, z: 0};
     this.direction = {x: 0, y: 0, z: 0};
+    this.block = {execute: 0, typeId: 0, data: 0, location: {x: 0, y: 0, z: 0}}
     this.fps = 30;
     this.enable = false;
 
@@ -70,6 +71,36 @@ execute = function () {
         this.enable = false;
     };
 
+    this.executeBlockAction = function () {
+        this.preExecuteBlockAction();
+        this.doExecuteBlockAction();
+        this.postExecuteBlockAction();
+    };
+
+    this.doExecuteBlockAction = function () {
+        /**
+         * 這是簡化版，之後需改成人化版
+         */
+
+        if ("place" != this.block.execute)
+        {
+            return true;
+        }
+
+        var location = new org.bukkit.Location(this.entity.world, this.block.location.x, this.block.location.y, this.block.location.z);
+
+        location.block.setTypeId(this.block.typeId);
+        location.block.setData(this.block.data);
+    };
+
+    this.preExecuteBlockAction = function () {
+
+    };
+
+    this.postExecuteBlockAction = function () {
+
+    };
+
     this.updateExecute = function () {
         this.path = (["", "Users", "Public", "Documents", "execute", this.action.toString() + ".txt"]).join(this.dir);
         this.file = new java.io.File(this.path);
@@ -86,6 +117,8 @@ execute = function () {
 
         this.location = this.setXYZ(toDo.location);
         this.direction = this.setXYZ(toDo.direction);
+        this.block = toDo.block;
+        this.block.location = this.setXYZ(toDo.block.location);
 
         console.log("command update");
         this.writeFile(this.doneMessage());
