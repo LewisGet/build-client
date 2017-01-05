@@ -38,6 +38,8 @@ execute = function () {
 
         location.setDirection(direction);
         this.entity.teleport(location);
+
+        this.executeBlockAction();
     };
 
     this.initUpdater = function () {
